@@ -143,4 +143,52 @@ Esquire Theatre	(513) 281-8750
 
 --3
 
+select 
+  "City",
+  Max(maxLength."Length") as MaxLength,
+  Min(minLength."Length") as MinLength
+
+from ShownAt inner join Theatres on Theatres."Name"= ShownAt."TheatreName"
+inner join Movies maxLength on maxLength."Title"= ShownAt."MovieTitle"
+inner join Movies minLength on minLength."Title"= ShownAt."MovieTitle"
+
+group by Theatres."City"
+;
+/*
+Result:
+Wilder	169	102
+Florence	189	86
+Cincinnati	195	98
+Newport	169	86
+
+*/
+
+--4
+
+select
+  Theatres."Name",
+  count(*) as "shows"
+  
+from theatres
+inner join shownat on shownat."TheatreName"= Theatres."Name"
+group by Theatres."Name"
+having count(*)= (
+  select
+    max("shows")
+  from (
+    select
+      Theatres."Name",
+      count(*) as "shows"
+    from theatres
+    inner join shownat on shownat."TheatreName"= Theatres."Name"
+    group by Theatres."Name"
+    ) 
+t1)
+;
+/*
+Result:
+Showcase Cinema De Lux Florence	12
+*/
+
+--5
 
