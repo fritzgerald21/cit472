@@ -167,11 +167,12 @@ Newport	169	86
 
 select
   Theatres."Name",
+  Theatres."Phone",
   count(*) as "shows"
   
 from theatres
 inner join shownat on shownat."TheatreName"= Theatres."Name"
-group by Theatres."Name"
+group by Theatres."Name", Theatres."Phone"
 having count(*)= (
   select
     max("shows")
@@ -187,7 +188,7 @@ t1)
 ;
 /*
 Result:
-Showcase Cinema De Lux Florence	12
+Showcase Cinema De Lux Florence	((800) 315-4000
 */
 
 --5
