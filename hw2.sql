@@ -114,7 +114,6 @@ Danbarry Dollar Saver Eastgate
 Esquire Theatre
 Great Escape 14
 Showcase Cinema De Lux Florence
-
 */
 
 -- 2
@@ -138,7 +137,6 @@ where t1."MovieTitle" is null
 Result:
 Danbarry Dollar Cinemas Turfway	(859) 647-2828
 Esquire Theatre	(513) 281-8750
-
 */
 
 --3
@@ -160,7 +158,6 @@ Wilder	169	102
 Florence	189	86
 Cincinnati	195	98
 Newport	169	86
-
 */
 
 --4
@@ -193,3 +190,72 @@ Showcase Cinema De Lux Florence	((800) 315-4000
 
 --5
 
+select
+  shownat."TheatreName",
+  --Movies."Rating"
+  avg(Movies."Rating") as Average
+  --Movies."Rating"
+  
+  from Movies
+  inner join shownat on shownat."MovieTitle"= Movies."Title"
+  
+  group by shownat."TheatreName"
+  
+  order by avg(Movies."Rating") asc
+
+;
+--I do not understand why only 2 theatres are returning data. But the sverages are correct for those theatres.
+/*
+Result:
+Danbarry Dollar Saver Eastgate	8.6
+Great Escape 14	8.42
+AMC Newport On The Levee 20	8.3375
+Showcase Cinema De Lux Florence	8.04166666666666666666666666666666666667
+Danbarry Dollar Cinemas Turfway	7.73333333333333333333333333333333333333
+Esquire Theatre	8.675
+*/
+
+
+--6
+
+select
+  Theatres."City",
+  --Movies."Rating"
+  avg(Movies."Rating") as Average
+  --Movies."Rating"
+  
+  from Movies
+  inner join shownat on shownat."MovieTitle"= Movies."Title"
+  inner join Theatres on Theatres."Name"= shownat."TheatreName"
+  
+  group by Theatres."City"
+  
+  order by avg(Movies."Rating") desc
+;
+/*
+Result:
+Cincinnati	8.6375
+Wilder	8.42
+Newport	8.3375
+Florence	7.93888888888888888888888888888888888889
+
+
+*/
+
+
+--7
+
+select
+  Theatres."City",
+  Movies."Title",
+  max(concat(concat(concat(trim(SUBSTR(Movies."ReleaseDate", 1,2)), '-'), concat(trim(SUBSTR(Movies."ReleaseDate", 3,3)), '-')), trim(SUBSTR(Movies."ReleaseDate", length(Movies."ReleaseDate")-4, length(Movies."ReleaseDate"))))) as release
+  --max(Movies."ReleaseDate")
+  
+  from Movies
+  inner join shownat on shownat."MovieTitle"= Movies."Title"
+  inner join Theatres on Theatres."Name"= shownat."TheatreName"
+  --where concat(concat(concat(trim(SUBSTR(Movies."ReleaseDate", 1,2)), '-'), concat(trim(SUBSTR(Movies."ReleaseDate", 3,3)), '-')), trim(SUBSTR(Movies."ReleaseDate", length(Movies."ReleaseDate")-4, length(Movies."ReleaseDate"))))=max(concat(concat(concat(trim(SUBSTR(Movies."ReleaseDate", 1,2)), '-'), concat(trim(SUBSTR(Movies."ReleaseDate", 3,3)), '-')), trim(SUBSTR(Movies."ReleaseDate", length(Movies."ReleaseDate")-4, length(Movies."ReleaseDate")))))
+group by Theatres."City", Movies."Title"
+
+order by Theatres."City", Movies."Title"
+;
